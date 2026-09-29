@@ -6,7 +6,9 @@
  * production tokens, fonts and component classes. Keep the class strings in
  * sync with InsightArticle.astro when that template changes.
  */
-CMS.registerPreviewStyle("/preview.css");
+// Resolved against the page URL: the app is served under a sub-path on
+// GitHub Pages, so no root-absolute paths anywhere in the bundle.
+CMS.registerPreviewStyle(new URL("preview.css", document.baseURI).href);
 
 const PROSE =
   "prose mt-12 max-w-none [&_a]:text-sky [&_a]:underline [&_a]:underline-offset-4 [&_blockquote]:border-l [&_blockquote]:border-sky/40 [&_blockquote]:pl-5 [&_code]:text-sky [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-white [&_li]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:text-text [&_p]:my-5 [&_p]:leading-relaxed [&_p]:text-text [&_strong]:text-white [&_table]:my-6 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:text-sm [&_td]:border-b [&_td]:border-line [&_td]:px-3 [&_td]:py-2.5 [&_td]:align-top [&_td]:text-text [&_th]:border-b [&_th]:border-line [&_th]:px-3 [&_th]:py-2.5 [&_th]:text-left [&_th]:font-semibold [&_th]:whitespace-nowrap [&_th]:text-white [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:text-text";

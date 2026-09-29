@@ -15,7 +15,7 @@ publish_mode: editorial_workflow
 site_url: https://www.avencyx.com
 display_url: https://www.avencyx.com
 logo:
-  src: /logo.svg
+  src: ./logo.svg   # relative: the app is served under a sub-path on GitHub Pages
 
 # Images: stored in the content repository under images/ and referenced as
 # /media/insights/<file>; the website copies them into place at build time
