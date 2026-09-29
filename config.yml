@@ -1,0 +1,134 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+#
+# Avencyx Insights Studio — Sveltia CMS configuration.
+# The store is the content repository (avencyx-insights), which the website
+# consumes as a git submodule at src/content/insights. `base_url` points to
+# the OAuth relay (sveltia-cms-auth on Cloudflare Workers) once deployed.
+
+backend:
+  name: github
+  repo: avencyx/avencyx-insights
+  branch: main
+  # base_url: https://<sveltia-cms-auth>.workers.dev   # OAuth relay (Cloudflare Worker), phase 2
+
+publish_mode: editorial_workflow
+site_url: https://www.avencyx.com
+display_url: https://www.avencyx.com
+logo:
+  src: /logo.svg
+
+# Images: stored in the content repository under images/ and referenced as
+# /media/insights/<file>; the website copies them into place at build time
+# (scripts/sync-insights-media.mjs). Keep them ≤ 1600 px wide, ≤ 300 KB.
+media_folder: images
+public_folder: /media/insights
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+i18n:
+  structure: multiple_folders
+  locales: [en, ro]
+  default_locale: en
+  # English lives at the collection root, Romanian under ro/ — the site's
+  # existing pairing convention (src/utils/i18n.ts).
+  omit_default_locale_from_file_path: true
+  omit_default_locale_from_preview_path: true
+
+collections:
+  - name: insights
+    label: Insights
+    label_singular: Article
+    # Root of the content repository (avencyx-insights); when working with a
+    # local repository, pick that repository's folder, not the website's.
+    folder: ""
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    i18n: true
+    slug: "{{slug}}"
+    preview_path: "{{locale}}/insights/{{slug}}/"
+    summary: "{{title}} — {{publishDate}}"
+    sortable_fields: [publishDate, title]
+    view_groups:
+      - label: Year
+        field: publishDate
+        pattern: \d{4}
+    fields:
+      # English is required to save; Romanian is completed in the same entry
+      # but may lag behind while drafting (`required: [en]`).
+      - name: title
+        label: Title
+        widget: string
+        i18n: true
+        required: [en]
+        hint: The article headline (H1).
+      - name: seoTitle
+        label: SEO title
+        widget: string
+        required: false
+        i18n: true
+        hint: "Browser/search title; falls back to “{title} | Avencyx Insights”. Keep under 60 characters."
+      - name: description
+        label: Description
+        widget: text
+        i18n: true
+        required: [en]
+        hint: One or two sentences; used as the intro and the meta description (aim for 120–155 characters).
+      - name: publishDate
+        label: Publish date
+        widget: datetime
+        format: YYYY-MM-DD
+        time_format: false
+        i18n: duplicate
+        hint: Set by the reviewer at publication.
+      - name: updatedDate
+        label: Updated date
+        widget: datetime
+        format: YYYY-MM-DD
+        time_format: false
+        required: false
+        i18n: duplicate
+      - name: tags
+        label: Tags
+        widget: list
+        default: []
+        required: false
+        i18n: duplicate
+        hint: Short lowercase tags, e.g. nis2, dora, incident-response.
+      - name: draft
+        label: Draft
+        widget: boolean
+        default: false
+        i18n: duplicate
+        hint: Drafts are excluded from the build even after merge.
+      # The list itself is mirrored across locales (same questions, same
+      # order — items are added or removed in English), while the question
+      # and answer text is translated per locale.
+      - name: faq
+        label: FAQ
+        label_singular: Question
+        widget: list
+        required: false
+        i18n: duplicate
+        collapsed: false
+        summary: "{{fields.q}}"
+        fields:
+          - name: q
+            label: Question
+            widget: string
+            i18n: true
+            required: [en]
+          - name: a
+            label: Answer
+            widget: text
+            i18n: true
+            required: [en]
+      - name: body
+        label: Body
+        widget: markdown
+        i18n: true
+        required: [en]
+        hint: "Markdown only — headings from H2 down, tables, lists, links. No HTML."
