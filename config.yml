@@ -9,7 +9,7 @@ backend:
   name: github
   repo: avencyx/avencyx-insights
   branch: main
-  # base_url: https://<sveltia-cms-auth>.workers.dev   # OAuth relay (Cloudflare Worker), phase 2
+  base_url: https://sveltia-cms-auth.catalin-patrascu.workers.dev   # OAuth relay (scripts/editorial/deploy-relay.ps1)
 
 publish_mode: editorial_workflow
 site_url: https://www.avencyx.com
