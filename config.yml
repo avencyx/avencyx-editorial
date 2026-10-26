@@ -19,9 +19,27 @@ logo:
 
 # Images: stored in the content repository under images/ and referenced as
 # /media/insights/<file>; the website copies them into place at build time
-# (scripts/sync-insights-media.mjs). Keep them ≤ 1600 px wide, ≤ 300 KB.
+# (scripts/sync-insights-media.mjs), which rejects files above 300 KB.
 media_folder: images
 public_folder: /media/insights
+
+# Uploads are converted in the browser before they reach the repository
+# (decision 27 Oct 2026): every raster image (PNG, JPEG, HEIC, …) becomes a
+# WebP scaled down to fit 1600 × 1600 px (never enlarged), animated images
+# and SVG pass through. The size limit is checked on the converted file, so
+# an upload that still exceeds 300 KB is refused here rather than at build.
+media_libraries:
+  default:
+    config:
+      max_file_size: 307200
+      transformations:
+        raster_image:
+          format: webp
+          quality: 80
+          width: 1600
+          height: 1600
+        svg:
+          optimize: true
 
 slug:
   encoding: ascii
